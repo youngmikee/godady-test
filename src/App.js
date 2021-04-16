@@ -1,24 +1,32 @@
-import logo from './logo.svg';
+import { useEffect, useState } from 'react';
 import './App.css';
+import Tab from './components/Tap';
+
+// https://api.github.com/orgs/godaddy/repos
 
 function App() {
+
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    fetch('https://api.github.com/orgs/godaddy/repos')
+    .then((response) => response.json())
+    .then(setData);
+  }, []);
+
+  // Mobile View
+  if (data) {
+    const dataObject = data.map((element, i) => ({id: i, data: element}));
+    return (
+      <div className="App">
+        <header className='top-header'><p>Godaddy Git Repository</p></header>
+        {dataObject.map((value) => <div className='App-Tab'> <Tab key={value.id} repo={value.data} /> </div>)}
+      </div>
+    );
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>No data</>
   );
 }
 
